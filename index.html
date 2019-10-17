@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Group Project</title>
+</head>
+
+<body>
+    <!-- Retrieved data will be dumped here -->
+    <h1>Hiking and Tacos and Beer, Oh My!</h1>
+    
+    <div class="beer">Beer</div>
+    <div class="hike">Hike</div>
+    <div class="tacos">Tacos</div>
+    <div class="geo">Geo!</div>
+    
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript">
+
+        var queryURLBeer = "https://api.openbrewerydb.org/breweries?by_";
+        //trying to dig into getting info by postal code or state; not working
+        
+        var queryURLHike = "https://www.hikingproject.com/data";
+        //Hike needs API key - Ben has that, I believe
+        var queryURLTacos = "#"
+        //Need an API page for Tacos or the Geo locator?
+
+        $.ajax({
+            url: queryURLBeer,
+            method: "GET"
+        })
+
+            .then(function (response) {
+                
+                console.log(response);
+
+                $(".beer").text("Beer by postal code: " + response.postal_code);
+
+                console.log("Beer by postal code: " + response.postal_code);
+               
+            });
+    </script>
+</body>
+
+</html>
