@@ -1,7 +1,7 @@
 # Group-Project
 Hiking and Food (but Tacos are Best) and Beer, Oh My!
 
-This is Ben and Corina and Gabes project
+This is Ben and Carina and Gabes project
 
 This app allows you to find a hike, as well as nearby breweries and restaurants (tacos, specifically!) so that you can burn calories first, then follow up with replacing those calories with beer and food.
 
