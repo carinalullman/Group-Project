@@ -1,13 +1,17 @@
+// change test value to false will turn off all of the debugging
 const test = true;
 
+// on click listens for the click of the current location button
+
 $('#currentLoc').on("click", function () {
-  // This function is based on geoFindMe function found at
+  // TODO look into this function to find if we can disable to alert
+  // CITATION: This function is based on geoFindMe function found at
   //https://developer.mozilla.org/en-US/docs/Web/API/Geolocation_API
   //this function return an object with the lat and lon of current location
-  const test = true;
 
-  if (test) { console.log("calling getCurLocation"); }
+  if (test) console.log("calling getCurLocation");
 
+  // initiallizing location object to store the results
   let location = {};
 
   function success(position) {
@@ -33,68 +37,74 @@ $('#currentLoc').on("click", function () {
   if (!navigator.geolocation) {
     console.log('Geolocation is not supported by your browser');
   } else {
+    // broswer function? which pulllocation information and calls success or error functions 
     navigator.geolocation.getCurrentPosition(success, error);
   }
 });
 
- function getFood() {
-    // function to query the zomato return food results and compare with the trail results
+function getFood(trails) {
+  // function to query the zomato return food results and compare with the trail results
 
-    const apiKey = "21c7ab7121b37e5d72444b1319ca063d";
-    let url = `https://developers.zomato.com/api/v2.1/`;
+  const apiKey = "21c7ab7121b37e5d72444b1319ca063d";
+  let url = `https://developers.zomato.com/api/v2.1/`;
 
-    let resource = "search";
-    let queryString = `?lat=37&lon=-95&radius=5`;
-    queryURL = (url + resource + queryString);
-     console.log("queryURL: ",queryURL);
-
-    $.ajax({
-      url: queryURL,
-      method: 'GET',
-      headers: { 
-        "user-key": apiKey, 
-        "Accept": "application/json" 
-      }
-    }).then(function (response) {
-      console.log(response);
-    });
-  }
-
-  function getTrails(loc) {
-    // function to query the zomato return food results and compare with the trail results
-
-    console.log("In getTrails");
-    console.log("loc",loc);
-    const apiKey = "7047618-fda9a49f18fe64841134cbba3d429bd2";
-    let url = `https://cors-anywhere.herokuapp.com/https://www.hikingproject.com/data/`;
-
-    // input array need to be mapped to these hard coded values
-    let latitude ="37";
-    let longitude ="-95";
-    let maxDistance ="50";
-    let maxResults ="10";
-
-    let resource = "get-trails";
-    let queryString = `?lat=${latitude}&lon=${longitude}&maxDistance=${maxDistance}&maxResults=${maxResults}&key=${apiKey}`;
-    // let queryString = `?lat=37&lon=-95&maxDistance=50&key=${apiKey}`;
-    queryURL = (url + resource + queryString);
+  let resource = "search";
+  let queryString = `?lat=37&lon=-95&radius=5`;
+  queryURL = (url + resource + queryString);
     console.log("queryURL: ",queryURL);
 
-    $.ajax({
-      url: queryURL,
-      method: 'GET',
-      dataType: "json",
-      headers: { "x-Requested-with": "xhr" }
-    }).then(function (response) {
-      console.log("trails reponse ",response);
-    }).catch(function (error) {
-      console.log("error", error);
-    });
-  }
-    
-      
-  // Listener for form dropdowns
-  $(document).ready(function(){
-    $('select').formSelect();
+  $.ajax({
+    url: queryURL,
+    method: 'GET',
+    headers: { 
+      "user-key": apiKey, 
+      "Accept": "application/json" 
+    }
+  }).then(function (response) {
+    console.log(response);
   });
-  
+}
+
+function getTrails(loc) {
+  // function to query the zomato return food results and compare with the trail results
+
+  if (test) console.log("In getTrails");
+  if (test) console.log("getTrail arg - loc:",loc);
+  // NOTICE: const is safer than var it narrows the scope for things which wont change
+  const apiKey = "7047618-fda9a49f18fe64841134cbba3d429bd2";
+
+  // input array need to be mapped to these hard coded values
+  const latitude = loc.latitude;
+  const longitude = loc.longitude;
+
+  //TODO need to tie in max Distance
+  const maxDistance = "50"
+  const maxResults ="10";
+
+  // uses heroku app as proxy? which provides valid server mitigating CORS error. can be slow
+  const url = `https://cors-anywhere.herokuapp.com/https://www.hikingproject.com/data/`;
+  const resource = "get-trails";
+  let queryString = `?lat=${latitude}&lon=${longitude}&maxDistance=${maxDistance}&maxResults=${maxResults}&key=${apiKey}`;
+  queryURL = (url + resource + queryString);
+
+  // NOTICE: if does not need  {} if it is one line
+  if (test) console.log("queryURL: ",queryURL);
+
+  $.ajax({
+    url: queryURL,
+    method: 'GET',
+    dataType: "json",
+    headers: { "x-Requested-with": "xhr" }
+  }).then(function (response) {
+    console.log("trails reponse ",response);
+    // TODO, logic here cull the response data to limit it to what we need
+    getFood(response);
+  }).catch(function (error) {
+    console.log("error", error);
+  });
+}
+
+// listener for form select
+$(document).ready(function(){
+    $('select').formSelect();
+});
