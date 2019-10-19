@@ -2,23 +2,173 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Squada+One&display=swap" rel="stylesheet">
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+    <!-- external stylesheet -->
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+
     <title>Group Project</title>
 </head>
 
-<body>
-    <!-- Retrieved data will be dumped here -->
-    <h1>Hiking and Tacos and Beer, Oh My!</h1>
+<body background="assets/background img/topography.png">
+
+<div class="container">
+
+    <!-- navbar -->
+    <nav>
+        <div class="nav-wrapper blue-grey darken-1">
+            <a href="index.html" class="brand-logo">Hike & Dinner</a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+            <li><a href="https://www.hikingproject.com">Hiking Project</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Location Selection -->
+    <div class="row">
+        <h5>Hike Location</h5>
+    </div>
     
-    <div class="beer">Beer</div>
-    <div class="hike">Hike</div>
-    <div class="tacos">Tacos</div>
-    <div class="geo">Geo!</div>
+    <div class="row">
+        <!-- Use Current -->
+        <div class="input-field col s4">
+            <a class="waves-effect waves-light btn green" id="currentLoc"><i class="material-icons right">my_location</i>Use Current</a>
+        </div>
+        <!-- Enter City -->       
+        <div class="input-field col s6">
+            <i class="material-icons prefix">add_location</i>
+            <input id="icon_prefix" type="text" class="validate">
+            <label for="icon_prefix">City, State</label>
+        </div>  
+        
+    </div>
+
+    <!-- Location Threshold Selection -->
+    <div class="row">
+        <!-- distance to TH -->
+        <div class="input-field col s6">
+            <select>
+                <option value="" disabled selected></option>
+                <option value="5">5 mi</option>
+                <option value="10">10 mi</option>
+                <option value="20">20 mi</option>
+                <option value="50">50 mi</option>
+            </select>
+            <label>Max Distance to Trailhead</label>
+        </div>
+        <!-- Distance from TH to Food -->
+        <div class="input-field col s6">
+            <select>
+                <option value="" disabled selected></option>
+                <option value="5">5 mi</option>
+                <option value="10">10 mi</option>
+                <option value="20">20 mi</option>
+                <option value="50">50 mi</option>
+            </select>
+            <label>Distance from TH to Food</label>
+        </div>
+    </div>
+
+    <!-- results  **add dynamically to results page once results are ready, don't show results until user makes selections -->
+    <div class="row">
+            <h5>
+                <span id="results">Results</span>
+            </h5>
+    </div>
+<!-- Results cards -->
+
+<!-- Row 1 -->
+<div class="row">
+    <!-- Trail Column Left -->
+    <div class="col s6 m6">
+        <div class="card blue-grey darken-1">
+        <div class="card-content white-text">
+            <span class="card-title">Trail Name</span>
+            <p>Dist to trail</p>
+            <p>Trail Length</p>
+            <p>Elev Gain</p>              
+        </div>
+        <div class="card-action">
+            <a href="#">Link to H-Proj</a>              
+        </div>
+        </div>
+    </div>
+    <!-- Food Column Right -->
+    <div class="col s6 m6">
+        <div class="card blue-grey darken-1">
+        <div class="card-content white-text">
+            <span class="card-title">Restraunt Name</span>
+            <p>Dist to restraunt</p>
+            <p>Stars on yelp</p>
+            <p>Type of food</p>              
+        </div>
+        <div class="card-action">
+            <a href="#">Link to Restraunt</a>              
+        </div>
+        </div>
+    </div>
+</div>
     
+<!-- Row 2 -->
+<div class="row">
+        <!-- Trail Column Left -->
+        <div class="col s6 m6">
+            <div class="card blue-grey darken-1">
+            <div class="card-content white-text">
+                <span class="card-title">Trail Name</span>
+                <p>Dist to trail</p>
+                <p>Trail Length</p>
+                <p>Elev Gain</p>              
+            </div>
+            <div class="card-action">
+                <a href="#">Link to H-Proj</a>              
+            </div>
+            </div>
+        </div>
+        <!-- Food Column Right -->
+        <div class="col s6 m6">
+            <div class="card blue-grey darken-1">
+            <div class="card-content white-text">
+                <span class="card-title">Restraunt Name</span>
+                <p>Dist to restraunt</p>
+                <p>Stars on yelp</p>
+                <p>Type of food</p>              
+            </div>
+            <div class="card-action">
+                <a href="#">Link to Restraunt</a>              
+            </div>
+            </div>
+        </div>
+    </div>
 
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    
+    
+    
+    
+
+</div>
+    
+
+<!-- Scripts Start Here -->
+
+<!-- Link JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!--JavaScript at end of body for optimized loading-->
+<script type="text/javascript" src="js/materialize.min.js"></script>
     <script type="text/javascript">
+    
+    // Listener for form dropdowns
+    $(document).ready(function(){
+        $('select').formSelect();
+      });
 
         var queryURLBeer = "https://api.openbrewerydb.org/breweries?by_";
         //trying to dig into getting info by postal code or state; not working
