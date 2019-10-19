@@ -20,7 +20,7 @@
     <!-- navbar -->
     <nav>
         <div class="nav-wrapper">
-            <a href="#" class="brand-logo">Hike & Dinner</a>
+            <a href="index.html" class="brand-logo">Hike & Dinner</a>
             <ul id="nav-mobile" class="right hide-on-med-and-down">
             <li><a href="https://www.hikingproject.com">Hiking Project</a></li>
             </ul>
@@ -29,12 +29,12 @@
 
     <!-- Location Selection -->
     <div class="row">
-        <h3>Hike Location</h3>
+        <h4>Hike Location</h4>
     </div>
     
     <div class="row">
         <!-- Use Current -->
-        <div class="col s4">
+        <div class="input-field col s4">
             <a class="waves-effect waves-light btn" id="currentLoc"><i class="material-icons right">my_location</i>Use Current</a>
         </div>
         <!-- Enter City -->       
@@ -45,6 +45,35 @@
         </div>  
         
     </div>
+
+    <!-- Location Threshold Selection -->
+    <div class="row">
+        <!-- distance to TH -->
+        <div class="input-field col s6">
+            <select>
+                <option value="" disabled selected>miles</option>
+                <option value="5">5 mi</option>
+                <option value="10">10 mi</option>
+                <option value="20">20 mi</option>
+                <option value="50">50 mi</option>
+            </select>
+            <label>Max Distance to Trailhead</label>
+        </div>
+        <!-- Distance from TH to Food -->
+        <div class="input-field col s6">
+            <select>
+                <option value="" disabled selected>miles</option>
+                <option value="5">5 mi</option>
+                <option value="10">10 mi</option>
+                <option value="20">20 mi</option>
+                <option value="50">50 mi</option>
+            </select>
+            <label>Max from TH to Food</label>
+        </div>
+    </div>
+
+
+
     
     
     
@@ -60,6 +89,11 @@
 <!--JavaScript at end of body for optimized loading-->
 <script type="text/javascript" src="js/materialize.min.js"></script>
     <script type="text/javascript">
+    
+    // Listener for form dropdowns
+    $(document).ready(function(){
+        $('select').formSelect();
+      });
 
         var queryURLBeer = "https://api.openbrewerydb.org/breweries?by_";
         //trying to dig into getting info by postal code or state; not working
