@@ -60,11 +60,13 @@ $('#currentLoc').on("click", function () {
     });
   }
 
-  function getTrails(arr) {
+  function getTrails(loc) {
     // function to query the zomato return food results and compare with the trail results
 
+    console.log("In getTrails");
+    console.log("loc",loc);
     const apiKey = "7047618-fda9a49f18fe64841134cbba3d429bd2";
-    let url = `https://cors-anywhere.herokuapp.com/hikingproject.com/data/`;
+    let url = `https://cors-anywhere.herokuapp.com/https://www.hikingproject.com/data/`;
 
     // input array need to be mapped to these hard coded values
     let latitude ="37";
@@ -74,14 +76,18 @@ $('#currentLoc').on("click", function () {
 
     let resource = "get-trails";
     let queryString = `?lat=${latitude}&lon=${longitude}&maxDistance=${maxDistance}&maxResults=${maxResults}&key=${apiKey}`;
+    // let queryString = `?lat=37&lon=-95&maxDistance=50&key=${apiKey}`;
     queryURL = (url + resource + queryString);
-     console.log("queryURL: ",queryURL);
+    console.log("queryURL: ",queryURL);
 
     $.ajax({
       url: queryURL,
       method: 'GET',
-      "X-Requested-With": XMLHttpRequest
+      dataType: "json",
+      headers: { "x-Requested-with": "xhr" }
     }).then(function (response) {
-      console.log(response);
+      console.log("trails reponse ",response);
+    }).catch(function (error) {
+      console.log("error", error);
     });
   }
