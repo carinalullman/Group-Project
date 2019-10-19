@@ -104,7 +104,11 @@ function getTrails(loc) {
   });
 }
 
+<<<<<<< HEAD
 // listener for form select
+=======
+// Listener for form dropdowns
+>>>>>>> gabe
 $(document).ready(function(){
     $('select').formSelect();
 });
