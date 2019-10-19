@@ -103,3 +103,8 @@ function getTrails(loc) {
     console.log("error", error);
   });
 }
+
+// Listener for form dropdowns
+$(document).ready(function(){
+    $('select').formSelect();
+});
