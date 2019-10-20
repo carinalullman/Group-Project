@@ -105,13 +105,18 @@ function getFood(trailsObj) {
           tDistTo: undefined,
           tLength: trailsArr[i].distance,  
           tElevGain: trailsArr[i].assent,  
+          tLink: undefined,
           rName: r.name,
           rDistTo: undefined, 
           rStars: r.user_rating.aggregate_rating,
-          rType: r.cuisines
+          rType: r.cuisines,
+          rLink: r.link
         }
         if (test) console.log("   drawObject:", drawObj);
+
+        drawResults(drawObj.tName, drawObj.tDistTo, drawObj.tlength, drawObj.tElevGain, drawObj.tLink, drawObj.rName, drawObj.rDistTo, drawObj.rStars, drawObj.rType, drawObj.rLink);
       }
+      // draw object should be here
     });
   }
 
