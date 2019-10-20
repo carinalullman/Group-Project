@@ -41,6 +41,9 @@ $('#currentLoc').on("click", function () {
   }
 });
 
+function getDistance(currentLat, currentLon, trailLat, trailLon) {
+  return Math.sqrt(Math.pow(currentLat - trailLat, 2) + Math.pow(currentLon - trailLon, 2));
+}
 function getFood(trailsObj) {
   // function to query the zomato return food results and compare with the trail results
 
@@ -96,14 +99,13 @@ function getFood(trailsObj) {
 
  // call draw result this is going to be a race condition.
  // how do we get all the results back before we draw?
-
 }
 
 function getTrails(loc) {
   // function to query the zomato return food results and compare with the trail results
 
   if (test) console.log("In getTrails");
-  if (test) console.log("getTrail arg - loc:",loc);
+  if (test) console.log("getTrail arg - loc:", loc);
   // NOTICE: const is safer than var it narrows the scope for things which wont change
   const apiKey = "7047618-fda9a49f18fe64841134cbba3d429bd2";
 
@@ -113,7 +115,7 @@ function getTrails(loc) {
 
   //TODO need to tie in max Distance
   const maxDistance = "50"
-  const maxResults ="10";
+  const maxResults = "10";
 
   // uses heroku app as proxy? which provides valid server mitigating CORS error. can be slow
   const url = `https://cors-anywhere.herokuapp.com/https://www.hikingproject.com/data/`;
@@ -122,7 +124,7 @@ function getTrails(loc) {
   queryURL = (url + resource + queryString);
 
   // NOTICE: if does not need  {} if it is one line
-  if (test) console.log("queryURL: ",queryURL);
+  if (test) console.log("queryURL: ", queryURL);
 
   $.ajax({
     url: queryURL,
@@ -130,7 +132,16 @@ function getTrails(loc) {
     dataType: "json",
     headers: { "x-Requested-with": "xhr" }
   }).then(function (response) {
-    console.log("trails reponse ",response);
+    let trails = response.trails; // Array of trails
+    for (let index = 0; index < trails.length; index++) {
+      const trail = response.trails[index];
+
+      let d = getDistance(loc.latitude, loc.longitude, trail.latitude, trail.longitude);
+      let miles = d * 69; // ~69 miles is 1 lat/long degree difference (approximate)
+      trail.distance = parseFloat(miles.toFixed(1)); // make miles only 1 decimal point
+    }
+
+    console.log("trails reponse ", response);
     // TODO, logic here cull the response data to limit it to what we need
     getFood(response);
   }).catch(function (error) {
@@ -139,6 +150,6 @@ function getTrails(loc) {
 }
 
 // Listener for form dropdowns
-$(document).ready(function(){
-    $('select').formSelect();
+$(document).ready(function () {
+  $('select').formSelect();
 });
