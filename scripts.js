@@ -49,15 +49,15 @@ function getFood(trailsObj) {
 
   let trailsArr = trailsObj.trails;
   if (test) console.log("in getFood");
-  if (test) console.log(" getFood arg trails:",trailsObj);
-  if (test) console.log(" trails.length:",trailsArr.length);
+  if (test) console.log(" getFood arg trails:", trailsObj);
+  if (test) console.log(" trails.length:", trailsArr.length);
 
   // these variables are here since they dont change each time through the loop
   const apiKey = "21c7ab7121b37e5d72444b1319ca063d";
   let url = `https://developers.zomato.com/api/v2.1/search`;
   // need to get value of selected option and convert from miles to meters (approximate)
   const radius = parseInt($('#distanceToFood').val()) * 1600;
-  if (test) console.log(" radius",radius);
+  if (test) console.log(" radius", radius);
 
   // these could be pulled from the form if we want to get fancy
   const srt = "real_distance";
@@ -67,38 +67,38 @@ function getFood(trailsObj) {
 
   // loop through all the entries in the trail array
   // trails.forEach( function(e) {
-  for (let i=0; i<trailsArr.length; i++) {
-    if (test) console.log(" considering trail:",trailsArr[i]);
+  for (let i = 0; i < trailsArr.length; i++) {
+    if (test) console.log(" considering trail:", trailsArr[i]);
     // pulling out information we need into new variables so I dont accedenatlly change the original data source
-    const trailLat = trailsArr[i].latitude; 
-    const trailLon = trailsArr[i].longitude; 
+    const trailLat = trailsArr[i].latitude;
+    const trailLon = trailsArr[i].longitude;
     const trailCity = trailsArr[i].location;  // maybe this would be an option
 
     let queryString = `?q=${cusine}&lat=${trailLat}&lon=${trailLon}&radius=${radius}&sort=${srt}&order=${odr}&count=${cnt}`;
     // let queryString = `?lat=${trailLat}&lon=${trailLon}&radius=${radius}`;
     queryURL = (url + queryString);
-    console.log(" queryURL: ",queryURL);
+    console.log(" queryURL: ", queryURL);
 
     $.ajax({
       url: queryURL,
       method: 'GET',
-      headers: { 
-        "user-key": apiKey, 
-        "Accept": "application/json" 
+      headers: {
+        "user-key": apiKey,
+        "Accept": "application/json"
       }
     }).then(function (response) {
       if (test) console.log(" in zomato response");
-      if (test) console.log("  zomato response",response);
+      if (test) console.log("  zomato response", response);
 
       // need to associate results
-      if (test) console.log("   trail id",trailsArr[i].id);
+      if (test) console.log("   trail id", trailsArr[i].id);
       // returning first restaurant name
-      if (test) console.log("   restaurant name",response.restaurants[0].restaurant.name);
+      if (test) console.log("   restaurant name", response.restaurants[0].restaurant.name);
     });
   }
 
- // call draw result this is going to be a race condition.
- // how do we get all the results back before we draw?
+  // call draw result this is going to be a race condition.
+  // how do we get all the results back before we draw?
 }
 
 function getTrails(loc) {
@@ -134,7 +134,7 @@ function getTrails(loc) {
   }).then(function (response) {
     let trails = response.trails; // Array of trails
     for (let index = 0; index < trails.length; index++) {
-      const trail = response.trails[index];
+      const trail = trails[index];
 
       let d = getDistance(loc.latitude, loc.longitude, trail.latitude, trail.longitude);
       let miles = d * 69; // ~69 miles is 1 lat/long degree difference (approximate)
@@ -147,6 +147,32 @@ function getTrails(loc) {
   }).catch(function (error) {
     console.log("error", error);
   });
+}
+
+function drawResults(trailName, distToTrail, trailLength, elevGain, trailLink,
+  restName, distToRest, starsOnYelp, typeOfFood, restLink) {
+  let newRow = document.createElement('div');
+  newRow.className = "row";
+
+  let existingRow = $(".row")[4]; // get the existing row from the HTML
+  let html = existingRow.innerHTML; // original HTML
+
+  // Replace all the old text with new values
+  html = html.replace('Trail Name', 'Trail Name: ' + trailName);
+  html = html.replace('Dist to trail', 'Dist to trail: ' + distToTrail);
+  html = html.replace('Trail Length', 'Trail Length: ' + trailLength);
+  html = html.replace('Elev Gain', 'Elev Gain: ' + elevGain);
+  html = html.replace('#">Link to H-Proj', trailLink + '">Link to H-Proj');
+
+  html = html.replace('Restaurant Name', 'Restaurant Name: ' + restName);
+  html = html.replace('Dist to restaurant', 'Dist to restaurant: ' + distToRest);
+  html = html.replace('Stars on yelp', 'Stars on yelp: ' + starsOnYelp);
+  html = html.replace('Type of food', 'Type of food: ' + typeOfFood);
+  html = html.replace('#">Link to Restaurant', restLink + '">Link to Restaurant');
+
+  newRow.innerHTML = html;
+
+  $('.container')[0].appendChild(newRow)
 }
 
 // Listener for form dropdowns
