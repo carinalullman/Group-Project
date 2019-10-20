@@ -94,6 +94,24 @@ function getFood(trailsObj) {
       if (test) console.log("   trail id",trailsArr[i].id);
       // returning first restaurant name
       if (test) console.log("   restaurant name",response.restaurants[0].restaurant.name);
+
+      for (let i=0; i<response.restaurants.length; i++ ) {
+
+        let r = response.restaurants[i].restaurant;
+        // if (test) console.log("   restaurant arr", r);
+
+        let drawObj = {
+          tName: trailsArr[i].name,
+          tDistTo: undefined,
+          tLength: trailsArr[i].distance,  
+          tElevGain: trailsArr[i].assent,  
+          rName: r.name,
+          rDistTo: undefined, 
+          rStars: r.user_rating.aggregate_rating,
+          rType: r.cuisines
+        }
+        if (test) console.log("   drawObject:", drawObj);
+      }
     });
   }
 
