@@ -44,7 +44,7 @@ $('#currentLoc').on("click", function () {
 });
 
 function getDistance(currentLat, currentLon, trailLat, trailLon) {
-  return Math.sqrt(Math.pow(parseFloat(currentLat) - parseFloat(trailLat), 2) + Math.pow(parseFloat(currentLon) - parseFloat(trailLon), 2));
+  return (Math.sqrt(Math.pow(parseFloat(currentLat) - parseFloat(trailLat), 2) + Math.pow(parseFloat(currentLon) - parseFloat(trailLon), 2))).toFixed(2);
 }
 
 function getFood(trailsArr) {
@@ -113,37 +113,31 @@ function getFood(trailsArr) {
          if (test) console.log("rdist", rDist);
 
         // checks to see if its closer, if not goes to next restaurant
-        console.log(typeof rDist, typeof closestRestDist);
-        console.log("tord1",rDist);
-        console.log("closet1",closestRestDist);
-
-        console.log(rDist > closestRestDist);
         if (rDist > closestRestDist) {
-          console.log("tord2",rDist);
-          console.log("closet2",closestRestDist);
           continue;
         }
-        closestRestDist = rDist;
-        if (test) console.log("keeping",j);
 
-        // checkout 
+        // sets new closest trail
+        closestRestDist = rDist;
+
+        // populate draw object 
         drawObj = {
           tName: t.name,
           tDistTo: t.dist2Trail,
-          tLength: t.distance,  
-          tElevGain: t.assent,  
+          tLength: t.length,  
+          tElevGain: t.ascent,  
           tLink: t.url,
           tImg: t.imgSqSmall,
           rName: r.name,
           rDistTo: rDist, 
           rStars: r.user_rating.aggregate_rating,
           rType: r.cuisines,
-          rLink: r.link
+          rLink: r.url
         }
 
         if (test) console.log("   drawObject:", drawObj);
       }
-      drawResults(drawObj.tName, drawObj.tDistTo, drawObj.tlength, drawObj.tElevGain, drawObj.tLink, drawObj.rName, drawObj.rDistTo, drawObj.rStars, drawObj.rType, drawObj.rLink);
+      drawResults(drawObj.tName, drawObj.tDistTo, drawObj.tLength, drawObj.tElevGain, drawObj.tLink, drawObj.rName, drawObj.rDistTo, drawObj.rStars, drawObj.rType, drawObj.rLink);
     });
     
   }
