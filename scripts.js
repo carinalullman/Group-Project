@@ -27,6 +27,8 @@ $('#currentLoc').on("click", function () {
     getTrails(location);
   }
 
+
+
   function error() {
     location = { success: false }
     console.log('Could not get location');
@@ -42,14 +44,14 @@ $('#currentLoc').on("click", function () {
 });
 
 function getDistance(currentLat, currentLon, trailLat, trailLon) {
-  return Math.sqrt(Math.pow(currentLat - trailLat, 2) + Math.pow(currentLon - trailLon, 2));
+  return Math.sqrt(Math.pow(parseFloat(currentLat) - parseFloat(trailLat), 2) + Math.pow(parseFloat(currentLon) - parseFloat(trailLon), 2));
 }
-function getFood(trailsObj) {
+
+function getFood(trailsArr) {
   // function to query the zomato return food results and compare with the trail results
 
-  let trailsArr = trailsObj.trails;
   if (test) console.log("in getFood");
-  if (test) console.log(" getFood arg trails:", trailsObj);
+  if (test) console.log(" getFood arg trails:", trailsArr);
   if (test) console.log(" trails.length:", trailsArr.length);
 
   // these variables are here since they dont change each time through the loop
@@ -70,11 +72,14 @@ function getFood(trailsObj) {
   for (let i = 0; i < trailsArr.length; i++) {
     if (test) console.log(" considering trail:", trailsArr[i]);
     // pulling out information we need into new variables so I dont accedenatlly change the original data source
-    const trailLat = trailsArr[i].latitude;
-    const trailLon = trailsArr[i].longitude;
-    const trailCity = trailsArr[i].location;  // maybe this would be an option
+    let t = trailsArr[i];
+    const tLat = t.latitude;
+    const tLon = t.longitude;
 
-    let queryString = `?q=${cusine}&lat=${trailLat}&lon=${trailLon}&radius=${radius}&sort=${srt}&order=${odr}&count=${cnt}`;
+    // will contain information about object to draw
+    let drawObj = {};
+
+    let queryString = `?q=${cusine}&lat=${tLat}&lon=${tLon}&radius=${radius}&sort=${srt}&order=${odr}&count=${cnt}`;
     // let queryString = `?lat=${trailLat}&lon=${trailLon}&radius=${radius}`;
     queryURL = (url + queryString);
     console.log(" queryURL: ", queryURL);
@@ -92,32 +97,55 @@ function getFood(trailsObj) {
 
       // need to associate results
       if (test) console.log("   trail id", trailsArr[i].id);
-      // returning first restaurant name
-      if (test) console.log("   restaurant name",response.restaurants[0].restaurant.name);
 
-      for (let i=0; i<response.restaurants.length; i++ ) {
+      //track closed restaurant
+      let closestRestDist = 1000;
+      for (let j=0; j < response.restaurants.length; j++ ) {
 
-        let r = response.restaurants[i].restaurant;
+        const r = response.restaurants[j].restaurant;
+        const rLat = r.location.latitude;
+        const rLon = r.location.longitude;
+
         // if (test) console.log("   restaurant arr", r);
 
-        let drawObj = {
-          tName: trailsArr[i].name,
-          tDistTo: undefined,
-          tLength: trailsArr[i].distance,  
-          tElevGain: trailsArr[i].assent,  
-          tLink: undefined,
+        // get distanct to from trail to rest
+        let rDist = getDistance(tLat, tLon, rLat, rLon);
+         if (test) console.log("rdist", rDist);
+
+        // checks to see if its closer, if not goes to next restaurant
+        console.log(typeof rDist, typeof closestRestDist);
+        console.log("tord1",rDist);
+        console.log("closet1",closestRestDist);
+
+        console.log(rDist > closestRestDist);
+        if (rDist > closestRestDist) {
+          console.log("tord2",rDist);
+          console.log("closet2",closestRestDist);
+          continue;
+        }
+        closestRestDist = rDist;
+        if (test) console.log("keeping",j);
+
+        // checkout 
+        drawObj = {
+          tName: t.name,
+          tDistTo: t.dist2Trail,
+          tLength: t.distance,  
+          tElevGain: t.assent,  
+          tLink: t.url,
+          tImg: t.imgSqSmall,
           rName: r.name,
-          rDistTo: undefined, 
+          rDistTo: rDist, 
           rStars: r.user_rating.aggregate_rating,
           rType: r.cuisines,
           rLink: r.link
         }
-        if (test) console.log("   drawObject:", drawObj);
 
-        drawResults(drawObj.tName, drawObj.tDistTo, drawObj.tlength, drawObj.tElevGain, drawObj.tLink, drawObj.rName, drawObj.rDistTo, drawObj.rStars, drawObj.rType, drawObj.rLink);
+        if (test) console.log("   drawObject:", drawObj);
       }
-      // draw object should be here
+      drawResults(drawObj.tName, drawObj.tDistTo, drawObj.tlength, drawObj.tElevGain, drawObj.tLink, drawObj.rName, drawObj.rDistTo, drawObj.rStars, drawObj.rType, drawObj.rLink);
     });
+    
   }
 
   // call draw result this is going to be a race condition.
@@ -161,12 +189,12 @@ function getTrails(loc) {
 
       let d = getDistance(loc.latitude, loc.longitude, trail.latitude, trail.longitude);
       let miles = d * 69; // ~69 miles is 1 lat/long degree difference (approximate)
-      trail.distance = parseFloat(miles.toFixed(1)); // make miles only 1 decimal point
+      trail.dist2Trail = parseFloat(miles.toFixed(1)); // make miles only 1 decimal point
     }
 
     console.log("trails reponse ", response);
     // TODO, logic here cull the response data to limit it to what we need
-    getFood(response);
+    getFood(trails);
   }).catch(function (error) {
     console.log("error", error);
   });
