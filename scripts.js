@@ -196,6 +196,8 @@ function getTrails(loc) {
 
 function drawResults(trailName, distToTrail, trailLength, elevGain, trailLink,
   restName, distToRest, starsOnYelp, typeOfFood, restLink) {
+
+  $('#results').attr('style','');  
   let newRow = document.createElement('div');
   newRow.className = "row";
 
