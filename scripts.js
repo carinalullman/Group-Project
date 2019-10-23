@@ -236,6 +236,10 @@ $(document).ready(function () {
   let queryString = `${place}&key=${cageKey}`;
   queryURL = (url + queryString);
 
+// empty results div
+$(".results-container").empty();
+
+
 // call cagedata API
   $.ajax({
     url: queryURL,
