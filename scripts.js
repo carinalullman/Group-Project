@@ -217,7 +217,7 @@ function drawResults(trailName, distToTrail, trailLength, elevGain, trailLink,
 
   newRow.innerHTML = html;
 
-  $('.container')[0].appendChild(newRow)
+  $('.results-container')[0].appendChild(newRow)
 }
 
 // Listener for form dropdowns
@@ -229,13 +229,14 @@ $(document).ready(function () {
   $("#search").click(function() {
     // print the search button
     if (test) console.log("search duh");
-
+// set variables for cagedata API call
   const url = `https://api.opencagedata.com/geocode/v1/json?q=`;
   let place = $("#icon_prefix").val();
   let cageKey = "68140e1b938e41eca2e9a95b4e0144cb";
   let queryString = `${place}&key=${cageKey}`;
   queryURL = (url + queryString);
 
+// call cagedata API
   $.ajax({
     url: queryURL,
     method: 'GET',    
@@ -244,6 +245,18 @@ $(document).ready(function () {
 
   if (test) console.log(" in cagedata response");
   if (test) console.log("  cagedata response", response);
+
+  let lat = response.results[0].geometry.lat;
+  let lon = response.results[0].geometry.lng;
+
+
+  let location = {
+    latitude: lat,
+    longitude: lon,
+    success: true
+  }
+
+  getTrails(location);
 
   })
 
