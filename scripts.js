@@ -159,7 +159,8 @@ function getTrails(loc) {
   const longitude = loc.longitude;
 
   //TODO need to tie in max Distance
-  const maxDistance = "50"
+  const maxDistance = $("#maxdistance").val();
+  console.log(maxDistance);
   const maxResults = "10";
 
   // uses heroku app as proxy? which provides valid server mitigating CORS error. can be slow
