@@ -224,3 +224,9 @@ function drawResults(trailName, distToTrail, trailLength, elevGain, trailLink,
 $(document).ready(function () {
   $('select').formSelect();
 });
+
+// Listener for search button
+$("#search").click(function() {
+  console.log("search duh");
+})
+
