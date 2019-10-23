@@ -117,7 +117,6 @@ function getTrails(loc) {
   const maxDistance = $("#maxdistance").val();
   console.log(maxDistance);
   const maxResults = "10";
-  const maxResults = "10";
 
   // uses heroku app as proxy? which provides valid server mitigating CORS error. can be slow
   const url = `https://cors-anywhere.herokuapp.com/https://www.hikingproject.com/data/`;
