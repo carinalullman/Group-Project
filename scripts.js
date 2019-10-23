@@ -226,7 +226,27 @@ $(document).ready(function () {
 });
 
 // Listener for search button
-$("#search").click(function() {
-  console.log("search duh");
+  $("#search").click(function() {
+    // print the search button
+    if (test) console.log("search duh");
+
+  const url = `https://api.opencagedata.com/geocode/v1/json?q=`;
+  let place = $("#icon_prefix").val();
+  let cageKey = "68140e1b938e41eca2e9a95b4e0144cb";
+  let queryString = `${place}&key=${cageKey}`;
+  queryURL = (url + queryString);
+
+  $.ajax({
+    url: queryURL,
+    method: 'GET',    
+  }).then(function (response) {
+
+
+  if (test) console.log(" in cagedata response");
+  if (test) console.log("  cagedata response", response);
+
+  })
+
 })
+
 

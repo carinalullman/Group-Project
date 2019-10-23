@@ -7,6 +7,7 @@ This app allows you to find a hike, as well as nearby breweries and restaurants 
 
 ## API Key
 Ben's Hiking Project API Key: 7047618-fda9a49f18fe64841134cbba3d429bd2
+Open Cage data API Key: 68140e1b938e41eca2e9a95b4e0144cb
 
 ## Functions to Write
 
