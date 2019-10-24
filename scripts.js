@@ -226,47 +226,64 @@ function drawResults(trailName, distToTrail, trailLength, elevGain, trailLink,
 // Listener for form dropdowns
 $(document).ready(function () {
   $('select').formSelect();
+
+
 });
 
-// Listener for search button
-  $("#search").click(function() {
-    // print the search button
-    if (test) console.log("search duh");
-// set variables for cagedata API call
-  const url = `https://api.opencagedata.com/geocode/v1/json?q=`;
-  let place = $("#icon_prefix").val();
-  let cageKey = "68140e1b938e41eca2e9a95b4e0144cb";
-  let queryString = `${place}&key=${cageKey}`;
-  queryURL = (url + queryString);
+// Listener for search button keydown
+$("#icon_prefix").keydown(function(event){
+  if (event.keyCode === 13){
+ 
+    if (test) console.log("enter keydown duh");
 
-// empty results div
-$(".results-container").empty();
+    cityState();
+  }});
 
+    
+  // Listener for search button click
+    $("#search").click(function() {
+      // print the search button
+      if (test) console.log("search duh");
 
-// call cagedata API
-  $.ajax({
-    url: queryURL,
-    method: 'GET',    
-  }).then(function (response) {
+      cityState();
 
+    });
+      // set variables for cagedata API call
+      
+      function cityState (){
+      const url = `https://api.opencagedata.com/geocode/v1/json?q=`;
+      let place = $("#icon_prefix").val();
+      let cageKey = "68140e1b938e41eca2e9a95b4e0144cb";
+      let queryString = `${place}&key=${cageKey}`;
+      queryURL = (url + queryString);
+      
+      // empty results div
+      $(".results-container").empty();      
+      
+      // call cagedata API
+      $.ajax({
+        url: queryURL,
+        method: 'GET',    
+      }).then(function (response) {        
+        
+        if (test) console.log(" in cagedata response");
+        if (test) console.log("  cagedata response", response);
+        
+        let lat = response.results[0].geometry.lat;
+        let lon = response.results[0].geometry.lng;        
+        
+        let location = {
+          latitude: lat,
+          longitude: lon,
+          success: true
+        }
+        
+        getTrails(location);
+        
+      })
+      
+    };
+  
 
-  if (test) console.log(" in cagedata response");
-  if (test) console.log("  cagedata response", response);
-
-  let lat = response.results[0].geometry.lat;
-  let lon = response.results[0].geometry.lng;
-
-
-  let location = {
-    latitude: lat,
-    longitude: lon,
-    success: true
-  }
-
-  getTrails(location);
-
-  })
-
-})
-
+    
 
