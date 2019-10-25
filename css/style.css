@@ -22,7 +22,7 @@ h5{
         margin: auto !important;
     }
 
-    #cityState {
+    .cityState {
         width: 70% !important;        
     }
 
