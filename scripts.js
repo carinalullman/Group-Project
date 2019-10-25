@@ -194,7 +194,7 @@ function getTrails(loc) {
 
       let d = getDistance(loc.latitude, loc.longitude, trail.latitude, trail.longitude);
       let miles = d * 69; // ~69 miles is 1 lat/long degree difference (approximate)
-      trail.dist2Trail = parseFloat(miles.toFixed(1)); // make miles only 1 decimal point
+       let trail.dist2Trail = parseFloat(miles.toFixed(1)); // make miles only 1 decimal point
     }
 
     console.log("trails reponse ", response);
