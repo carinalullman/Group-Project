@@ -103,6 +103,10 @@ function getFood(trailsArr) {
       for (let j=0; j < response.restaurants.length; j++ ) {
 
         const r = response.restaurants[j].restaurant;
+
+        // skip if restaurant is not defined
+        if ( r.name == null ) { continue; }
+
         const rLat = r.location.latitude;
         const rLon = r.location.longitude;
 
@@ -182,13 +186,16 @@ function getTrails(loc) {
     for (let index = 0; index < trails.length; index++) {
       const trail = trails[index];
 
+        // skip if trail is not defined
+        if ( trail.name == null ) { continue; }
+
+
       let d = getDistance(loc.latitude, loc.longitude, trail.latitude, trail.longitude);
       let miles = d * 69; // ~69 miles is 1 lat/long degree difference (approximate)
       trail.dist2Trail = parseFloat(miles.toFixed(1)); // make miles only 1 decimal point
     }
 
     console.log("trails reponse ", response);
-    // TODO, logic here cull the response data to limit it to what we need
     getFood(trails);
   }).catch(function (error) {
     console.log("error", error);
