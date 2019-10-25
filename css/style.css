@@ -10,10 +10,24 @@ h5{
     /* For mobile phones: */
     .mainLogo {
         font-size: 1.2rem !important;
+        margin: 0px !important;
     }
-    nav{
+    nav {
         width: 70% !important;
         margin: auto !important;        
+    }
+
+    #currentLoc {
+        width: 100% !important;
+        margin: auto !important;
+    }
+
+    #cityState {
+        width: 70% !important;        
+    }
+
+    #search {
+        margin-left: 35px;
     }
 }
 
@@ -21,11 +35,12 @@ h5{
 @media screen and (max-width: 410px) {
    
     .mainLogo {
-        font-size: .75rem !important;
+        font-size: .9rem !important;
+        margin: 0px !important;
     }
-    nav{
+    nav {
         width: 70% !important;
-        margin: auto !important;        
+        margin: auto !important;             
     }
 }
   
