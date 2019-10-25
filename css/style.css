@@ -2,6 +2,30 @@ h5{
     font-family: 'Squada One', cursive;
 }
 
-.brand-logo{
+.mainLogo{
     margin-left: 15px;
 }
+
+@media screen and (max-width: 768px) {
+    /* For mobile phones: */
+    .mainLogo {
+        font-size: 1.2rem !important;
+    }
+    nav{
+        width: 70% !important;
+        margin: auto !important;        
+    }
+}
+
+/* iphone 5 and the other superSmalls */
+@media screen and (max-width: 410px) {
+   
+    .mainLogo {
+        font-size: .75rem !important;
+    }
+    nav{
+        width: 70% !important;
+        margin: auto !important;        
+    }
+}
+  
