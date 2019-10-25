@@ -1,9 +1,9 @@
 # Group-Project
 Hiking and Food (but Tacos are Best) and Beer, Oh My!
 
-This is Ben and Carina and Gabes project
+This is Ben and Carina and Gabe's project
 
-This app allows you to find a hike, as well as nearby breweries and restaurants (tacos, specifically!) so that you can burn calories first, then follow up with replacing those calories with beer and food.
+This app allows you to find a hike, as well as nearby places to eat (tacos, specifically!) so that you can burn calories first, then follow up with replacing those calories with beer and food.
 
 ## API Key
 Ben's Hiking Project API Key: 7047618-fda9a49f18fe64841134cbba3d429bd2

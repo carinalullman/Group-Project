@@ -164,7 +164,7 @@ function getTrails(loc) {
 
   //TODO need to tie in max Distance
   const maxDistance = $("#maxdistance").val();
-  console.log(maxDistance);
+  if (test) console.log("Max Distance: ",maxDistance);
   const maxResults = "10";
 
   // uses heroku app as proxy? which provides valid server mitigating CORS error. can be slow
@@ -188,6 +188,8 @@ function getTrails(loc) {
 
         // skip if trail is not defined
         if ( trail.name == null ) { continue; }
+        // skip if TH is too far away based on user's max distance preference set in dropdown
+        if (trail.dist2Trail > maxDistance) { continue; }
 
 
       let d = getDistance(loc.latitude, loc.longitude, trail.latitude, trail.longitude);
