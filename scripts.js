@@ -100,21 +100,22 @@ function getFood(trailsArr) {
 
       //track closed restaurant
       let closestRestDist = 1000;
-      for (let j=0; j < response.restaurants.length; j++ ) {
+      for (let j = 0; j < response.restaurants.length; j++) {
 
         const r = response.restaurants[j].restaurant;
 
         // skip if restaurant is not defined
-        if ( r.name == null ) { continue; }
+        if (r.name == null) { continue; }
 
         const rLat = r.location.latitude;
         const rLon = r.location.longitude;
+
 
         // if (test) console.log("   restaurant arr", r);
 
         // get distanct to from trail to rest
         let rDist = getDistance(tLat, tLon, rLat, rLon);
-         if (test) console.log("rdist", rDist);
+        if (test) console.log("rdist", rDist);
 
         // checks to see if its closer, if not goes to next restaurant
         if (rDist > closestRestDist) {
@@ -128,22 +129,33 @@ function getFood(trailsArr) {
         drawObj = {
           tName: t.name,
           tDistTo: t.dist2Trail,
-          tLength: t.length,  
-          tElevGain: t.ascent,  
+          tLength: t.length,
+          tElevGain: t.ascent,
+          tImg: t.imgSmallMed,
           tLink: t.url,
           tImg: t.imgSqSmall,
           rName: r.name,
-          rDistTo: rDist, 
+          rThumb: r.thumb,
+          rDistTo: rDist,
           rStars: r.user_rating.aggregate_rating,
           rType: r.cuisines,
+          rImg: r.thumb,
           rLink: r.url
+        }
+
+        if (drawObj.tImg === "") {
+          drawObj.tImg = 'https://cdn-files.apstatic.com/hike/7048859_smallMed_1555540136.jpg';
+        }
+
+        if (drawObj.rImg === "") {
+          drawObj.rImg = 'assets/generic_food.png';
         }
 
         if (test) console.log("   drawObject:", drawObj);
       }
-      drawResults(drawObj.tName, drawObj.tDistTo, drawObj.tLength, drawObj.tElevGain, drawObj.tLink, drawObj.rName, drawObj.rDistTo, drawObj.rStars, drawObj.rType, drawObj.rLink);
+      drawResults(drawObj.tName, drawObj.tDistTo, drawObj.tLength, drawObj.tElevGain, drawObj.tImg, drawObj.tLink, drawObj.rName, drawObj.rDistTo, drawObj.rStars, drawObj.rType, drawObj.rImg, drawObj.rLink);
     });
-    
+
   }
 
   // call draw result this is going to be a race condition.
@@ -186,8 +198,8 @@ function getTrails(loc) {
     for (let index = 0; index < trails.length; index++) {
       const trail = trails[index];
 
-        // skip if trail is not defined
-        if ( trail.name == null ) { continue; }
+      // skip if trail is not defined
+      if (trail.name == null) { continue; }
 
 
       let d = getDistance(loc.latitude, loc.longitude, trail.latitude, trail.longitude);
@@ -196,16 +208,21 @@ function getTrails(loc) {
     }
 
     console.log("trails reponse ", response);
+
+    // TODO, logic here cull the response data to limit it to what we need
     getFood(trails);
   }).catch(function (error) {
     console.log("error", error);
   });
 }
 
-function drawResults(trailName, distToTrail, trailLength, elevGain, trailLink,
-  restName, distToRest, starsOnYelp, typeOfFood, restLink) {
+let trailPics = [];
+let restPics = [];
 
-  $('#results').attr('style','');  
+function drawResults(trailName, distToTrail, trailLength, elevGain, trailImg, trailLink,
+  restName, distToRest, starsOnYelp, typeOfFood, restImg, restLink) {
+
+  $('#results').attr('style', '');
   let newRow = document.createElement('div');
   newRow.className = "row";
 
@@ -217,12 +234,14 @@ function drawResults(trailName, distToTrail, trailLength, elevGain, trailLink,
   html = html.replace('Dist to trail', 'Dist to trail: ' + distToTrail);
   html = html.replace('Trail Length', 'Trail Length: ' + trailLength);
   html = html.replace('Elev Gain', 'Elev Gain: ' + elevGain);
+  html = html.replace('imgSmall" src="#', 'imgSmall" src="' + trailImg);
   html = html.replace('#">Link to H-Proj', trailLink + '">Link to H-Proj');
 
   html = html.replace('Restaurant Name', 'Restaurant Name: ' + restName);
   html = html.replace('Dist to restaurant', 'Dist to restaurant: ' + distToRest);
   html = html.replace('Stars on yelp', 'Stars on yelp: ' + starsOnYelp);
   html = html.replace('Type of food', 'Type of food: ' + typeOfFood);
+  html = html.replace('imgRest" src="#', 'imgRest" src="' + restImg);
   html = html.replace('#">Link to Restaurant', restLink + '">Link to Restaurant');
 
   newRow.innerHTML = html;
@@ -238,59 +257,60 @@ $(document).ready(function () {
 });
 
 // Listener for search button keydown
-$("#icon_prefix").keydown(function(event){
-  if (event.keyCode === 13){
- 
+$("#icon_prefix").keydown(function (event) {
+  if (event.keyCode === 13) {
+
     if (test) console.log("enter keydown duh");
 
     cityState();
-  }});
+  }
+});
 
-    
-  // Listener for search button click
-    $("#search").click(function() {
-      // print the search button
-      if (test) console.log("search duh");
 
-      cityState();
+// Listener for search button click
+$("#search").click(function () {
+  // print the search button
+  if (test) console.log("search duh");
 
-    });
-      // set variables for cagedata API call
-      
-      function cityState (){
-      const url = `https://api.opencagedata.com/geocode/v1/json?q=`;
-      let place = $("#icon_prefix").val();
-      let cageKey = "68140e1b938e41eca2e9a95b4e0144cb";
-      let queryString = `${place}&key=${cageKey}`;
-      queryURL = (url + queryString);
-      
-      // empty results div
-      $(".results-container").empty();      
-      
-      // call cagedata API
-      $.ajax({
-        url: queryURL,
-        method: 'GET',    
-      }).then(function (response) {        
-        
-        if (test) console.log(" in cagedata response");
-        if (test) console.log("  cagedata response", response);
-        
-        let lat = response.results[0].geometry.lat;
-        let lon = response.results[0].geometry.lng;        
-        
-        let location = {
-          latitude: lat,
-          longitude: lon,
-          success: true
-        }
-        
-        getTrails(location);
-        
-      })
-      
-    };
-  
+  cityState();
 
-    
+});
+// set variables for cagedata API call
+
+function cityState() {
+  const url = `https://api.opencagedata.com/geocode/v1/json?q=`;
+  let place = $("#icon_prefix").val();
+  let cageKey = "68140e1b938e41eca2e9a95b4e0144cb";
+  let queryString = `${place}&key=${cageKey}`;
+  queryURL = (url + queryString);
+
+  // empty results div
+  $(".results-container").empty();
+
+  // call cagedata API
+  $.ajax({
+    url: queryURL,
+    method: 'GET',
+  }).then(function (response) {
+
+    if (test) console.log(" in cagedata response");
+    if (test) console.log("  cagedata response", response);
+
+    let lat = response.results[0].geometry.lat;
+    let lon = response.results[0].geometry.lng;
+
+    let location = {
+      latitude: lat,
+      longitude: lon,
+      success: true
+    }
+
+    getTrails(location);
+
+  })
+
+};
+
+
+
 
