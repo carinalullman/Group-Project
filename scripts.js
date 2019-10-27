@@ -102,6 +102,8 @@ function getFood(trailsArr) {
       let closestRestDist = 1000;
       for (let j = 0; j < response.restaurants.length; j++) {
 
+        if (test) console.log("new rest check");
+
         const r = response.restaurants[j].restaurant;
 
         // skip if restaurant is not defined
@@ -119,8 +121,11 @@ function getFood(trailsArr) {
 
         // checks to see if its closer, if not goes to next restaurant
         if (rDist > closestRestDist) {
+          if (test) console.log("distance rejected: rDist > closestRestDist",rDist,closestRestDist);
           continue;
         }
+
+        if (test) console.log("distance accepted: rDist > closestRestDist",rDist,closestRestDist);
 
         // sets new closest trail
         closestRestDist = rDist;
@@ -153,6 +158,7 @@ function getFood(trailsArr) {
 
         if (test) console.log("   drawObject:", drawObj);
       }
+      if (test) console.log("   finalDist:", drawObj.tDistTo);
       drawResults(drawObj.tName, drawObj.tDistTo, drawObj.tLength, drawObj.tElevGain, drawObj.tImg, drawObj.tLink, drawObj.rName, drawObj.rDistTo, drawObj.rStars, drawObj.rType, drawObj.rImg, drawObj.rLink);
     });
 
@@ -176,7 +182,7 @@ function getTrails(loc) {
 
   //TODO need to tie in max Distance
   const maxDistance = $("#maxdistance").val();
-  console.log(maxDistance);
+  console.log("maxDistance",maxDistance);
   const maxResults = "10";
 
   // uses heroku app as proxy? which provides valid server mitigating CORS error. can be slow
@@ -194,23 +200,32 @@ function getTrails(loc) {
     dataType: "json",
     headers: { "x-Requested-with": "xhr" }
   }).then(function (response) {
-    let trails = response.trails; // Array of trails
-    for (let index = 0; index < trails.length; index++) {
-      const trail = trails[index];
+    let validTrails  = [];
+    for (let index = 0; index < response.trails.length; index++) {
+      const trail = response.trails[index];
 
       // skip if trail is not defined
       if (trail.name == null) { continue; }
 
-
       let d = getDistance(loc.latitude, loc.longitude, trail.latitude, trail.longitude);
       let miles = d * 69; // ~69 miles is 1 lat/long degree difference (approximate)
+
+      // checks to see if we exceed maxDIstance
+      if (miles > maxDistance) { continue; }
+
+      // checks to see if we exceed max results
+      if (validTrails.length >= maxResults) { continue; }
+      /// adds distnace toarray to be returned
       trail.dist2Trail = parseFloat(miles.toFixed(1)); // make miles only 1 decimal point
+
+      // adds trail to valid trails if it does not exceed the maxDistance and is not null
+      validTrails.push(trail);
     }
 
-    console.log("trails reponse ", response);
+    console.log("trails reponse ", validTrails);
 
     // TODO, logic here cull the response data to limit it to what we need
-    getFood(trails);
+    getFood(validTrails);
   }).catch(function (error) {
     console.log("error", error);
   });
