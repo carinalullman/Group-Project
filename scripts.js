@@ -1,5 +1,5 @@
 // change test value to false will turn off all of the debugging
-const test = true;
+const test = false;
 
 // on click listens for the click of the current location button
 
@@ -65,11 +65,15 @@ function getFood(trailsArr) {
   const srt = "real_distance";
   const odr = "asc";
   const cusine = "mex"; // sticking with tacos, may need to change if not enough results
-  const cnt = "5"; // sticking with tacos, may need to change if not enough results
+  const cnt = "20"; // sticking with tacos, may need to change if not enough results
+
+  // keep track of suggested restaurants for all trails
+  let suggestedRest = [];
 
   // loop through all the entries in the trail array
   // trails.forEach( function(e) {
   for (let i = 0; i < trailsArr.length; i++) {
+
     if (test) console.log(" considering trail:", trailsArr[i]);
     // pulling out information we need into new variables so I dont accedenatlly change the original data source
     let t = trailsArr[i];
@@ -82,7 +86,7 @@ function getFood(trailsArr) {
     let queryString = `?q=${cusine}&lat=${tLat}&lon=${tLon}&radius=${radius}&sort=${srt}&order=${odr}&count=${cnt}`;
     // let queryString = `?lat=${trailLat}&lon=${trailLon}&radius=${radius}`;
     queryURL = (url + queryString);
-    console.log(" queryURL: ", queryURL);
+    if (test) console.log(" trails queryURL: ", queryURL);
 
     $.ajax({
       url: queryURL,
@@ -100,6 +104,7 @@ function getFood(trailsArr) {
 
       //track closed restaurant
       let closestRestDist = 1000;
+
       for (let j = 0; j < response.restaurants.length; j++) {
 
         if (test) console.log("new rest check");
@@ -126,6 +131,16 @@ function getFood(trailsArr) {
         }
 
         if (test) console.log("distance accepted: rDist > closestRestDist",rDist,closestRestDist);
+
+        // will skip to next restaurand sugestion if there are more and the suggestion has already been used
+        // if ( (r.name in suggestedRest) && j < (response.restaurants.length) ) continue;
+        if ( ( suggestedRest.includes(r.name)) ) {
+          if (test) console.log("suggestedRest failed",suggestedRest,r.name);
+          continue;
+        }
+
+        suggestedRest.push(r.name);
+        // if (test) console.log("suggestedRest",suggestedRest);
 
         // sets new closest trail
         closestRestDist = rDist;
@@ -182,7 +197,7 @@ function getTrails(loc) {
 
   //TODO need to tie in max Distance
   const maxDistance = $("#maxdistance").val();
-  console.log("maxDistance",maxDistance);
+  if (test) console.log("maxDistance",maxDistance);
   const maxResults = "10";
 
   // uses heroku app as proxy? which provides valid server mitigating CORS error. can be slow
@@ -222,7 +237,9 @@ function getTrails(loc) {
       validTrails.push(trail);
     }
 
-    console.log("trails reponse ", validTrails);
+    // sort by distance order create an anonymous function which returns truthy vs falsy used by the sort function
+    // works but does not matter because when we draw it is notdrawing them in a differne torder, i gues some are faster then othres?
+    validTrails.sort( (a,b) => a.dist2Trail - b.dist2Trail );
 
     // TODO, logic here cull the response data to limit it to what we need
     getFood(validTrails);
@@ -245,14 +262,14 @@ function drawResults(trailName, distToTrail, trailLength, elevGain, trailImg, tr
   let html = existingRow.innerHTML; // original HTML
 
   // Replace all the old text with new values
-  html = html.replace('Trail Name', 'Trail Name: ' + trailName);
+  html = html.replace('Trail Name',  trailName);
   html = html.replace('Dist to trail', 'Dist to trail: ' + distToTrail);
   html = html.replace('Trail Length', 'Trail Length: ' + trailLength);
   html = html.replace('Elev Gain', 'Elev Gain: ' + elevGain);
   html = html.replace('imgSmall" src="#', 'imgSmall" src="' + trailImg);
   html = html.replace('#">Link to H-Proj', trailLink + '">Link to H-Proj');
 
-  html = html.replace('Restaurant Name', 'Restaurant Name: ' + restName);
+  html = html.replace('Restaurant Name', restName);
   html = html.replace('Dist to restaurant', 'Dist to restaurant: ' + distToRest);
   html = html.replace('Stars on yelp', 'Stars on yelp: ' + starsOnYelp);
   html = html.replace('Type of food', 'Type of food: ' + typeOfFood);
@@ -260,6 +277,9 @@ function drawResults(trailName, distToTrail, trailLength, elevGain, trailImg, tr
   html = html.replace('#">Link to Restaurant', restLink + '">Link to Restaurant');
 
   newRow.innerHTML = html;
+
+  // this is undefined sometimes drop out to not draw undefined results. but why?
+  if (restName == undefined) return;
 
   $('.results-container')[0].appendChild(newRow)
 }
@@ -321,11 +341,5 @@ function cityState() {
     }
 
     getTrails(location);
-
   })
-
 };
-
-
-
-
